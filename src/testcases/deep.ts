@@ -3,10 +3,10 @@ import * as v from "valibot";
 import type { TestCase } from "../types.js";
 
 export default {
-  name: 'deep',
+  name: "deep",
   data: [
     {
-      name: 'valid',
+      name: "valid",
       expected: { success: true },
       data: {
         a: {
@@ -86,7 +86,10 @@ export default {
                                                   w: v.object({
                                                     x: v.object({
                                                       y: v.object({
-                                                        z: v.union([v.string(), v.number()])
+                                                        z: v.union([
+                                                          v.string(),
+                                                          v.number(),
+                                                        ]),
                                                       }),
                                                     }),
                                                   }),
@@ -139,7 +142,10 @@ export default {
                                                   w: z.object({
                                                     x: z.object({
                                                       y: z.object({
-                                                        z: z.union([z.string(), z.number()])
+                                                        z: z.union([
+                                                          z.string(),
+                                                          z.number(),
+                                                        ]),
                                                       }),
                                                     }),
                                                   }),

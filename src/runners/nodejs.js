@@ -10,11 +10,10 @@ const results = BENCHMARK.TEST_CASES.map(BENCHMARK.runBenchmark);
 const outputFileName =
   typeof Deno !== "undefined" ? Deno.args[0] : process.argv[2];
 
-
 /** @type {import('../types.js').BenchmarkResults} */
 const benchmarkResults = {
-  results
-}
+  results,
+};
 if (outputFileName) {
   fs.writeFileSync(outputFileName, JSON.stringify(benchmarkResults));
 }

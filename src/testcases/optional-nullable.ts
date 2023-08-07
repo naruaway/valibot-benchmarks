@@ -27,12 +27,10 @@ const zodSchema = () => {
     content: ContentJsonSchema.optional().nullable(),
     labels: z.string().array().optional().nullable(),
     answers: AnswerJsonSchema.array().optional().nullable(),
-    results: ResultJsonSchema.array()
-      .optional()
-      .nullable(),
+    results: ResultJsonSchema.array().optional().nullable(),
   });
 
-  return EntryJsonSchema
+  return EntryJsonSchema;
 };
 
 const valibotSchema = () => {
@@ -63,15 +61,14 @@ const valibotSchema = () => {
     results: v.nullable(v.optional(v.array(ResultJsonSchema))),
   });
 
-  return EntryJsonSchema
+  return EntryJsonSchema;
 };
-
 
 export default {
   name: "optional-nullable",
   data: [
     {
-      name: 'valid',
+      name: "valid",
       expected: { success: true },
       data: {
         a: "hello",
@@ -88,16 +85,19 @@ export default {
           {
             key: "jfeoiaojfe",
             value: { anyvalue: "any" },
-          }, {
+          },
+          {
             key: "jfeoiaojfe",
             value: { anyvalue: "any" },
-          }, {
+          },
+          {
             key: "fjieoawjfiaw",
             value: { anyvalue: "any" },
-          }, {
+          },
+          {
             key: "jifoaw",
             value: { anyvalue: "any" },
-          }
+          },
         ],
         results: [
           {
@@ -121,11 +121,11 @@ export default {
             value: { anyvalue: "any" },
           },
         ],
-      }
-    }
+      },
+    },
   ],
   schema: {
     valibot: valibotSchema(),
     zod: zodSchema(),
-  }
-} satisfies TestCase
+  },
+} satisfies TestCase;

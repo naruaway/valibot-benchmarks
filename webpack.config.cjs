@@ -25,19 +25,20 @@ module.exports = {
     extensions: ["...", ".ts", ".tsx"],
     extensionAlias: {
       ".js": [".ts", ".js"],
-      ".mjs": [".mts", ".mjs"]
-    }
+      ".mjs": [".mts", ".mjs"],
+    },
   },
   module: {
     rules: [
       {
-        test: /\.tsx?$/, use: {
-          loader: "babel-loader", options: {
+        test: /\.tsx?$/,
+        use: {
+          loader: "babel-loader",
+          options: {
             presets: ["@babel/preset-typescript"],
-          }
-        }
+          },
+        },
       },
     ],
   },
 };
-

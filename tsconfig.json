@@ -9,20 +9,14 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
     "noPropertyAccessFromIndexSignature": true,
-    "types": [
-      "node"
-    ],
+    "types": ["node"],
     "sourceMap": true,
     "noEmit": true,
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "incremental": true,
     "esModuleInterop": true,
@@ -35,12 +29,6 @@
       }
     ]
   },
-  "include": [
-    "./src/**/*",
-    "./app/**/*",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["./src/**/*", "./app/**/*", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
 }
