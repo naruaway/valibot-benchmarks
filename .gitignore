@@ -1,6 +1,16 @@
+# Node.js
 /node_modules/
-/dist/
+
+# Next.js
 /.next/
-/results/
+/out/
+
+# 0x
 /0x/
+
+#/ TypeScript
 /tsconfig.tsbuildinfo
+
+# Build results
+/dist/
+/results/
