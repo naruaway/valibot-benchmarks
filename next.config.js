@@ -1,3 +1,4 @@
 export default {
-  output: 'export',
-}
+  output: "export",
+  basePath: "/valibot-benchmarks",
+};
