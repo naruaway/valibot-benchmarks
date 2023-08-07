@@ -1,0 +1,6 @@
+/node_modules/
+/dist/
+/.next/
+/results/
+/0x/
+/tsconfig.tsbuildinfo

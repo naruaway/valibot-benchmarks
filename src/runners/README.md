@@ -1,0 +1,7 @@
+- Measure memory
+- TODO: Add more JS engines
+  - https://hermesengine.dev/docs/building-and-running/
+  - duktape
+    - also WASM
+  - quickjs
+    - also WASM
