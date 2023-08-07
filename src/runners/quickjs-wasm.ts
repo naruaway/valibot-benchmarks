@@ -1,5 +1,4 @@
 import { getQuickJS } from "quickjs-emscripten"
-import * as fs from "node:fs";
 
 
 import "../../dist/main.js";

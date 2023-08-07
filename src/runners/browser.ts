@@ -1,4 +1,4 @@
-import { firefox, webkit, } from 'playwright'
+import { firefox } from 'playwright'
 import * as v from 'valibot'
 import type { Benchmark, BenchmarkResults } from '../types';
 

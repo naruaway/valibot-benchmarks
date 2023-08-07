@@ -1,6 +1,7 @@
 import { validData, invalidData } from "../testcases/many-features.js"
 
 const run = async () => {
+  // @ts-ignore
   const res = await fetch('http://localhost:8455', {
     method: "POST",
     headers: {
@@ -8,7 +9,7 @@ const run = async () => {
     },
     body: JSON.stringify({
       libName: 'valibot',
-      data: invalidData
+      data: Math.random() > 0.5 ? invalidData : validData
     })
   })
 

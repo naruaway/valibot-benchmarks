@@ -13,7 +13,7 @@
     "experimental:hono": "NODE_ENV=production ./node_modules/.bin/tsx ./src/hono.ts",
     "experimental:browser": "./node_modules/.bin/tsx ./src/runners/browser.ts 3000",
     "next:dev": "./node_modules/.bin/next",
-    "next:build": "./node_modules/.bin/next",
+    "next:build": "./node_modules/.bin/next build",
     "lint:knip": "./node_modules/.bin/knip",
     "lint:type": "./node_modules/.bin/tsc"
   },
