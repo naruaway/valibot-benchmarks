@@ -35,7 +35,7 @@ const runBenchmark = (testCase: TestCase): BenchmarkResult => {
             }
 
             const elapsedTime = performance.now() - start;
-            if (elapsedTime > 5000) {
+            if (elapsedTime > 100) {
               return Math.floor(i / (elapsedTime / 1000));
             }
           }

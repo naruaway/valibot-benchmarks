@@ -34,3 +34,9 @@ jobs:
         with:
           deno-version: v1.x
       - run: npm ci && npm run build && npm run bench
+      - name: Commit
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: './results'
+        default_author: github_actions
+        message: 'Update benchmark results'

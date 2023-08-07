@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "./node_modules/.bin/webpack --mode=production && cp src/main.html dist/index.html",
-    "bench": "npm run build && npm run bench:nodejs && npm run bench:deno && npm run bench:bun",
+    "bench": "npm run build && npm run bench:nodejs",
     "bench:nodejs": "mkdir -p results && NODE_ENV=production node ./src/runners/nodejs.js results/nodejs.json",
     "bench:deno": "mkdir -p results && deno run --no-npm --allow-write=./results/deno.json ./src/runners/nodejs.js ./results/deno.json",
     "bench:bun": "mkdir -p results && bun ./src/runners/nodejs.js ./results/bun.json",
