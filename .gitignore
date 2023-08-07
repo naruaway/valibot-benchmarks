@@ -13,3 +13,6 @@
 
 # Build results
 /dist/
+
+# Place to put locally built libraries
+/libs/

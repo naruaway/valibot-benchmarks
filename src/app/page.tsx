@@ -1,9 +1,11 @@
 import * as fs from "node:fs";
-import type { BenchmarkResults, BenchmarkResult } from "../src/types.js";
+import type { BenchmarkResults, BenchmarkResult } from "../types.js";
 import type { ReactNode } from "react";
 import * as v from "valibot";
 import * as path from "node:path";
+import { loadConfig } from "../load_config";
 
+const config = loadConfig();
 const formatNumber = (() => {
   const nf = new Intl.NumberFormat("en-US");
   return (n: number) => nf.format(n);
@@ -84,10 +86,14 @@ const BenchmarkResultView = ({ result }: { result: BenchmarkResult }) => {
       {result.results.map((r) => {
         const baseline = v
           .number()
-          .parse(r.results.find((r) => r.libName === "zod")?.opsPerSecond);
+          .parse(
+            r.results.find((r) => r.libName === config.baseline)?.opsPerSecond,
+          );
         const target = v
           .number()
-          .parse(r.results.find((r) => r.libName === "valibot")?.opsPerSecond);
+          .parse(
+            r.results.find((r) => r.libName === config.target)?.opsPerSecond,
+          );
 
         const metrics = relativeMetrics({ baseline, target });
 

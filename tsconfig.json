@@ -29,6 +29,6 @@
       }
     ]
   },
-  "include": ["./src/**/*", "./app/**/*", ".next/types/**/*.ts"],
+  "include": ["./src/**/*", "./app/**/*", ".next/types/**/*.ts", "./config.ts"],
   "exclude": ["node_modules"]
 }
