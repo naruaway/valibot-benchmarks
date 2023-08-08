@@ -13,3 +13,7 @@ We already have a great benchmark suite ([typescript-runtime-type-benchmarks](ht
 2. Edit [./config.ts](./config.ts) to suit your needs. You can configure it to use locally built packages for example.
 3. Run `npm run bench` to run benchmarks. The benchmark results will be stored in ./results directory
 4. (optional) You can check visual results by running `npm run next:dev` and open `http://localhost:3000/valibot-benchmarks`
+
+## How to add new test data
+
+Please check [./test_data/](./test_data/) directory.
