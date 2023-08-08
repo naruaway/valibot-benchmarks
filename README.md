@@ -1,6 +1,7 @@
 # Valibot Benchmarks
 
-**See the latest benchmark results in https://naruaway.github.io/valibot-benchmarks/**
+- The relevant tracking issue in Valibot: https://github.com/fabian-hiller/valibot/issues/73
+- The latest visual benchmark results: https://naruaway.github.io/valibot-benchmarks/
 
 [Valibot](https://github.com/fabian-hiller/valibot) is known for its extremely small bundle size and tree-shakability thanks to its simple architecture.
 It would be even nice if Valibot is faster than competitors, notably, [Zod](https://github.com/colinhacks/zod).
