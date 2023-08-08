@@ -68,8 +68,9 @@ const Label = ({
   colorTw?: string;
   href?: string;
 }) => {
-  const className = `${bgColorTw ? bgColorTw : "bg-slate-100"} ${colorTw ?? ""
-    } rounded px-2 py-1 mr-2`;
+  const className = `${bgColorTw ? bgColorTw : "bg-slate-100"} ${
+    colorTw ?? ""
+  } rounded px-2 py-1 mr-2`;
   return href ? (
     <a className={className} href={href}>
       {children}
@@ -82,7 +83,10 @@ const Label = ({
 const getSchemaDefinitionLink = (schemaName: string): string => {
   return `https://github.com/naruaway/valibot-benchmarks/tree/main/test_data/${schemaName}/schema`;
 };
-const getDataDefinitionLink = (schemaName: string, dataName: string): string => {
+const getDataDefinitionLink = (
+  schemaName: string,
+  dataName: string,
+): string => {
   return `https://github.com/naruaway/valibot-benchmarks/tree/main/test_data/${schemaName}/data/${dataName}.ts`;
 };
 
@@ -120,7 +124,9 @@ const BenchmarkResultView = ({ result }: { result: BenchmarkResult }) => {
               <Label href={getSchemaDefinitionLink(result.schemaName)}>
                 schema: "{result.schemaName}"
               </Label>
-              <Label href={getDataDefinitionLink(result.schemaName, r.dataName)}>
+              <Label
+                href={getDataDefinitionLink(result.schemaName, r.dataName)}
+              >
                 data: "{r.dataName}"
               </Label>
             </div>
@@ -174,6 +180,17 @@ export default function Page() {
           the GitHub repo
         </a>{" "}
         to see the motivation of this benchmark suite.
+      </p>
+      <p>
+        <strong>
+          Do not conclude anything about Valibot performance yet since{" "}
+          <a
+            className={linkTw}
+            href="https://github.com/fabian-hiller/valibot/issues/73"
+          >
+            we are working on performance improvements actively
+          </a>
+        </strong>
       </p>
       {data.map((d) => (
         <>
