@@ -61,20 +61,29 @@ const Label = ({
   children,
   bgColorTw,
   colorTw,
+  href,
 }: {
   children: ReactNode;
   bgColorTw?: string;
   colorTw?: string;
+  href?: string;
 }) => {
-  return (
-    <span
-      className={`${bgColorTw ? bgColorTw : "bg-slate-100"} ${
-        colorTw ?? ""
-      } rounded px-2 py-1 mr-2`}
-    >
+  const className = `${bgColorTw ? bgColorTw : "bg-slate-100"} ${colorTw ?? ""
+    } rounded px-2 py-1 mr-2`;
+  return href ? (
+    <a className={className} href={href}>
       {children}
-    </span>
+    </a>
+  ) : (
+    <span className={className}>{children}</span>
   );
+};
+
+const getSchemaDefinitionLink = (schemaName: string): string => {
+  return `https://github.com/naruaway/valibot-benchmarks/tree/main/test_data/${schemaName}/schema`;
+};
+const getDataDefinitionLink = (schemaName: string, dataName: string): string => {
+  return `https://github.com/naruaway/valibot-benchmarks/tree/main/test_data/${schemaName}/data/${dataName}.ts`;
 };
 
 const BenchmarkResultView = ({ result }: { result: BenchmarkResult }) => {
@@ -108,8 +117,12 @@ const BenchmarkResultView = ({ result }: { result: BenchmarkResult }) => {
               >
                 {metrics.message}
               </Label>
-              <Label>schema: "{result.schemaName}"</Label>
-              <Label>data: "{r.dataName}"</Label>
+              <Label href={getSchemaDefinitionLink(result.schemaName)}>
+                schema: "{result.schemaName}"
+              </Label>
+              <Label href={getDataDefinitionLink(result.schemaName, r.dataName)}>
+                data: "{r.dataName}"
+              </Label>
             </div>
             <div className="m-1">
               {r.results.map((s) => (
