@@ -14,11 +14,11 @@
     "experimental:browser": "./node_modules/.bin/tsx ./src/runners/browser.ts 3000",
     "next:dev": "./node_modules/.bin/next",
     "next:build": "./node_modules/.bin/next build",
-    "lint": "npm run format",
+    "lint": "npm run lint:format",
     "lint:knip": "./node_modules/.bin/knip",
     "lint:type": "./node_modules/.bin/tsc",
-    "format:fix": "./node_modules/.bin/prettier --write .",
-    "format": "./node_modules/.bin/prettier --check ."
+    "lint:format": "./node_modules/.bin/prettier --check .",
+    "lint:format:fix": "./node_modules/.bin/prettier --write ."
   },
   "dependencies": {
     "@babel/preset-typescript": "7.22.5",
