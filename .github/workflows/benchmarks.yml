@@ -31,7 +31,7 @@ jobs:
         uses: denoland/setup-deno@v1
         with:
           deno-version: v1.x
-      - run: npm ci && && npm run bench
+      - run: npm ci && npm run bench
       - name: Commit
         uses: EndBug/add-and-commit@v9
         with:
