@@ -1,21 +1,9 @@
-import * as z from "zod";
-import * as v from "valibot";
+import * as os from "node:os";
 
-type ParseResult =
-  | {
-      success: true;
-      data: unknown;
-    }
-  | {
-      success: false;
-      error: { issues: unknown[] };
-    };
-
-export const createParse = (
-  schema: z.Schema | v.BaseSchema,
-): ((data: unknown) => ParseResult) => {
-  if (schema instanceof z.ZodType) {
-    return (data: unknown) => schema.safeParse(data);
-  }
-  return (data: unknown) => v.safeParse(schema, data);
+export const detectOsType = (): "linux" | "macos" | "windows" => {
+  const osType = os.type();
+  if (osType.startsWith("Darwin")) return "macos";
+  if (osType.startsWith("Linux")) return "linux";
+  if (osType.startsWith("Windows")) return "windows";
+  throw new Error(`FIXME: Unknown OS: ${osType}`);
 };

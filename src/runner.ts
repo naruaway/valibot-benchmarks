@@ -9,6 +9,7 @@ import { loadConfig } from "./load_config";
 import type { BenchmarkResults, RunnerType } from "./types";
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { detectOsType } from "./util";
 
 const config = loadConfig();
 
@@ -181,8 +182,10 @@ const runBenchmark = (runner: Runner): BenchmarkResults => {
 for (const runnerType of config.runners) {
   console.log(`Running benchmarks using ${runnerType}`);
   const result = runBenchmark(runners[runnerType]);
+  const resultDir = path.join("results", detectOsType());
+  fs.mkdirSync(resultDir, { recursive: true });
   fs.writeFileSync(
-    path.join("results", runnerType + ".json"),
+    path.join(resultDir, runnerType + ".json"),
     JSON.stringify(result),
   );
 }
