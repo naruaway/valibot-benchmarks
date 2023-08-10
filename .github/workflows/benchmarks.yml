@@ -31,6 +31,9 @@ jobs:
         uses: denoland/setup-deno@v1
         with:
           deno-version: v1.x
+      - name: test git commands
+        run: |
+          git clone https://github.com/naruaway-sandbox/fast-refresh-hmr-memory-leak-demo.git
       - run: npm ci && npm run bench
       - name: Commit
         uses: EndBug/add-and-commit@v9
