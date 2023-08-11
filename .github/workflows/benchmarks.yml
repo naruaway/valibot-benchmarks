@@ -31,7 +31,11 @@ jobs:
         uses: denoland/setup-deno@v1
         with:
           deno-version: v1.x
-      - name: Run benchmarks
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      -- name: Run benchmarks
         run: npm ci && ./scripts/test-ci.sh && npm run bench
       - name: Commit
         uses: EndBug/add-and-commit@v9
