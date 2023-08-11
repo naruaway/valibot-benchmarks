@@ -5,7 +5,7 @@ repo=$1
 ref=$2
 targetdir=$3
 
-repotmpdir=.githubrepotmp
+repotmpdir=tmp-githubrepo
 
 mkdir $repotmpdir
 

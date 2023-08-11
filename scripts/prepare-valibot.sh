@@ -1,12 +1,15 @@
 #!/bin/bash
 set -euo pipefail
+repo=$1
+ref=$2
 
-variantname=myver
-tmpdirname=.valibottmprepodir
-./scripts/download-github-repo.sh naruaway/valibot main $tmpdirname
-cd $tmpdirname 
+tmpdirname=tmp-valibotdir
+./scripts/download-github-repo.sh "$repo" "$ref" "$tmpdirname"
+cd "$tmpdirname"
 pnpm i
 cd library
 pnpm build
-mv $tmpdirname/library/ "libs/valibot@$variantname"
-rmdir $tmpdirname
+
+cd ../../
+mv "$tmpdirname"/library/ "libs/valibot@$ref"
+rm -rf "$tmpdirname"
