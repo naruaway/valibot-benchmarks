@@ -8,6 +8,7 @@
     "bench:nodejs": "mkdir -p results && NODE_ENV=production node ./src/runners/nodejs.js results/nodejs.json",
     "bench:deno": "mkdir -p results && deno run --no-npm --allow-write=./results/deno.json ./src/runners/nodejs.js ./results/deno.json",
     "bench:bun": "mkdir -p results && bun ./src/runners/nodejs.js ./results/bun.json",
+    "clean:libs": "rm -rf ./libs/*",
     "experimental:profile": "NODE_ENV=production ./node_modules/.bin/0x --output-dir=0x ./src/runners/nodejs.js",
     "experimental:debugger": "NODE_ENV=production node --inspect-brk ./src/runners/nodejs.js",
     "experimental:hono": "NODE_ENV=production ./node_modules/.bin/tsx ./src/hono.ts",
@@ -40,7 +41,8 @@
     "vitest": "0.34.1",
     "webpack": "5.88.2",
     "webpack-cli": "5.1.4",
-    "zod": "3.21.4"
+    "zod": "3.21.4",
+    "zx": "7.2.3"
   },
   "devDependencies": {
     "@types/react": "18.2.19",
