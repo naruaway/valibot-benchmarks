@@ -32,7 +32,7 @@ jobs:
         with:
           deno-version: v1.x
       - name: Run benchmarks
-      - run: npm ci && ./scripts/test-ci.sh && npm run bench
+        run: npm ci && ./scripts/test-ci.sh && npm run bench
       - name: Commit
         uses: EndBug/add-and-commit@v9
         with:
