@@ -1,5 +1,7 @@
 # Valibot Benchmarks
 
+This is an **unofficial** benchmarks for [Valibot](https://github.com/fabian-hiller/valibot).
+
 - The relevant tracking issue in Valibot: https://github.com/fabian-hiller/valibot/issues/73
 - The latest visual benchmark results: https://naruaway.github.io/valibot-benchmarks/
 
