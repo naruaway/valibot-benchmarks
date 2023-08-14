@@ -34,11 +34,22 @@ jobs:
         with:
           version: 8
       - name: Run benchmarks
-        run: npm ci && ./scripts/test-ci.sh && npm run bench
-      - name: Commit
-        uses: EndBug/add-and-commit@v9
+        run: echo helloworld > myfile.txt
+      - uses: actions/upload-artifact@v3
         with:
-          add: "./results"
-          pull: "--rebase --autostash"
-          default_author: github_actions
-          message: "Update benchmark results"
+          name: ${{ matrix.os }}
+          path: myfile.txt
+      # - name: Commit
+      #   uses: EndBug/add-and-commit@v9
+      #   with:
+      #     add: "./results"
+      #     pull: "--rebase --autostash"
+      #     default_author: github_actions
+      #     message: "Update benchmark results"
+  finalize:
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          path: myartifacts
+      - name: finalize
+        run: find ./myartifacts
