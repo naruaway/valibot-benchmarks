@@ -192,12 +192,13 @@ const runBenchmark = (
 import * as d3 from "d3-array";
 export const runFixedBenchmarks = (
   runnerList: RunnerType[],
+  iterationsCount: number
 ): Record<RunnerType, number> => {
   const metrics: Record<string, number[]> = Object.fromEntries(
     runnerList.map((runnerType) => [runnerType, []]),
   );
 
-  for (let i = 0; i < 100; ++i) {
+  for (let i = 0; i < iterationsCount; ++i) {
     for (const runnerType of runnerList) {
       const result = runners[runnerType].run(
         "./resources/fixed-benchmark-script.js",

@@ -61,14 +61,14 @@ const benchmarkConfig: BenchmarkConfig = {
   libs,
 
   durationMs: 100,
-  iterationsCount: 100,
+  iterationsCount: 2,
 
   runners: ["nodejs", "bun"],
 };
 
 await buildForConfig(benchmarkConfig);
 
-const fixedBenchmarks = runFixedBenchmarks(["nodejs", "bun"]);
+const fixedBenchmarks = runFixedBenchmarks(["nodejs", "bun"], 2);
 const benchmarkResult = await runBenchmarks(benchmarkConfig);
 console.dir({ fixedBenchmarks, benchmarkResult }, { depth: null });
 
