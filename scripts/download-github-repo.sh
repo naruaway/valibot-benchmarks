@@ -14,10 +14,10 @@ cd $repotmpdir
 curl -L \
   -H "Accept: application/vnd.github+json" \
   -H "X-GitHub-Api-Version: 2022-11-28" \
-   "https://api.github.com/repos/$repo/zipball/$ref" > repo.zip
+   "https://api.github.com/repos/$repo/tarball/$ref" > repo.tar
 
-unzip repo.zip
-rm repo.zip
+tar -xf repo.tar
+rm repo.tar
 mv * ../"$targetdir"
 cd ..
 rmdir $repotmpdir
