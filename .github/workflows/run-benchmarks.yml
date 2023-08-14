@@ -1,6 +1,11 @@
 on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'pending_tasks/**/*'
 
 jobs:
   build:
@@ -50,14 +55,14 @@ jobs:
       # TODO: verify the correctness of downloaded artifacts
       - name: finalize
         run: rsync -a ./downloaded-artifacts/ubuntu-latest/ ./results/ && rsync -a ./downloaded-artifacts/macos-latest/ ./results/
+      - name: updatependingtasksdir
+        run: npm ci && npm run ci:finalize-pending-tasks
       - name: check
         run: find ./results
-
       - name: Commit
         uses: EndBug/add-and-commit@v9
         with:
-          add: "['./results']"
+          add: "['./results', './pending_tasks']"
           pull: "--rebase --autostash"
           default_author: github_actions
           message: "Update benchmark results"
-
