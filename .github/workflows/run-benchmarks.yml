@@ -63,6 +63,6 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v5
       - name: Enable Pull Request Automerge
-        run: gh pr merge ${{ steps.cpr.outputs.pull-request-number }}
+        run: gh pr merge --rebase ${{ steps.cpr.outputs.pull-request-number }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
