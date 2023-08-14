@@ -5,12 +5,10 @@ import typescriptEslintParser from "@typescript-eslint/parser";
 /** @type {import('eslint').Linter.FlatConfig[]} */
 export default [
   {
-    ignores: [
-      '.next/**/*',
-    ],
+    ignores: [".next/**/*"],
   },
   {
-    plugins: { '@typescript-eslint': typescriptEslint },
+    plugins: { "@typescript-eslint": typescriptEslint },
     files: ["src/**/*.ts"],
     languageOptions: {
       parser: typescriptEslintParser,
@@ -22,7 +20,7 @@ export default [
       ...js.configs.recommended.rules,
       ...typescriptEslint.configs["recommended-type-checked"].rules,
       ...typescriptEslint.configs["stylistic-type-checked"].rules,
-      'no-undef': 'off',
+      "no-undef": "off",
     },
   },
 ];
