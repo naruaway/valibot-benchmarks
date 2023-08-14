@@ -148,7 +148,7 @@ const BenchmarkResultView = ({ result }: { result: BenchmarkResult }) => {
 const linkTw = "text-blue-600 dark:text-blue-500 hover:underline";
 
 export default function Page() {
-  const resultsDir = './results/macos'
+  const resultsDir = './results'
 
   const data: Array<{ name: string; data: BenchmarkResults }> = fs
     .readdirSync(resultsDir)
