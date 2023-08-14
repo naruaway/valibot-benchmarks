@@ -2,62 +2,87 @@ import { $ } from "zx";
 import { match } from "ts-pattern";
 import { assertNonNull, buildForConfig } from "../src/build";
 import type { BenchmarkConfig } from "../src/types";
-import { runBenchmarks } from "../src/runner";
+import { runBenchmarks, runFixedBenchmarks } from "../src/runner";
+import * as fs from "node:fs";
+import * as path from "node:path";
+import { detectOsType, getMetaData } from "../src/util";
 
+const metaData = await getMetaData();
+const valibotCommit = "ea4e6f39dce43cfc49eb542b1b200fb5a904b1ae";
 type Lib =
   | {
-    type: "valibot";
-    repo: string;
-    commit: string;
-  }
+      type: "valibot";
+      repo?: {
+        path: string;
+        commit: string;
+      };
+    }
   | {
-    type: "zod";
-  };
-const config = {
+      type: "zod";
+    };
+
+const config: { libs: Lib[] } = {
   libs: [
+    // {
+    //   type: "valibot",
+    // },
     {
       type: "valibot",
-      repo: "fabian-hiller/valibot",
-      commit: "27278fe99be29dfa96fe950b126ad7fca54218d5",
+      repo: {
+        path: "fabian-hiller/valibot",
+        commit: valibotCommit,
+      },
     },
-    {
-      type: "valibot",
-      repo: "fabian-hiller/valibot",
-      commit: "dbb3df06866387b1ca85df64a3bcab9151c6a31f",
-    },
-    { type: "zod" },
+    // { type: "zod" },
   ],
-} satisfies {
-  libs: Lib[];
 };
 
 for (const lib of config.libs) {
   await match(lib)
     .with({ type: "valibot" }, async (l) => {
-      await $`./scripts/prepare-valibot.sh ${l.repo} ${l.commit}`;
+      if (l.repo) {
+        await $`./scripts/prepare-valibot.sh ${l.repo.path} ${l.repo.commit}`;
+      }
     })
-    .with({ type: "zod" }, async () => { })
+    .with({ type: "zod" }, async () => {})
     .exhaustive();
 }
 
 const libs = config.libs.map((lib) =>
   match(lib)
-    .with({ type: "valibot" }, (l) => `${l.type}@${l.commit}`)
+    .with({ type: "valibot" }, (l) =>
+      l.repo ? `${l.type}@${l.repo.commit}` : l.type,
+    )
     .with({ type: "zod" }, (l) => l.type)
     .exhaustive(),
 );
 
 const benchmarkConfig: BenchmarkConfig = {
   libs,
-  baseline: assertNonNull(libs[0]),
-  target: assertNonNull(libs[1]),
 
   durationMs: 100,
   iterationsCount: 100,
 
   runners: ["nodejs", "bun"],
-}
+};
 
 await buildForConfig(benchmarkConfig);
 
-await runBenchmarks(benchmarkConfig)
+const fixedBenchmarks = runFixedBenchmarks(["nodejs", "bun"]);
+const benchmarkResult = await runBenchmarks(benchmarkConfig);
+console.dir({ fixedBenchmarks, benchmarkResult }, { depth: null });
+
+const resultsDir = path.join(
+  "./results/valibot/commits",
+  valibotCommit,
+  detectOsType(),
+);
+fs.mkdirSync(resultsDir, { recursive: true });
+fs.writeFileSync(
+  path.join(resultsDir, "result.json"),
+  JSON.stringify({
+    fixedBenchmarks,
+    benchmarkResult,
+    meta: metaData,
+  }),
+);

@@ -1,12 +1,11 @@
-import { $ } from 'zx'
-import { buildForConfig } from '../src/build'
-import { loadConfig } from '../src/load_config'
+import { $ } from "zx";
+import { buildForConfig } from "../src/build";
+import { loadConfig } from "../src/load_config";
 
-const config = loadConfig()
-await $`rm -rf ./dist`
-await $`mkdir dist`
+const config = loadConfig();
+await $`rm -rf ./dist`;
+await $`mkdir dist`;
 
-await buildForConfig(config)
+await buildForConfig(config);
 
-await $`cp src/main.html dist/index.html`
-
+await $`cp src/main.html dist/index.html`;
