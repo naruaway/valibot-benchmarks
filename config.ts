@@ -10,9 +10,9 @@ export default {
    *   target: "valibot@after"
    * Then you need to put locally built version of valibot into `./libs/valibot@before` and `./libs/valibot@after` respectively.
    */
-  libs: ["valibot@b352de9cb9535f39ea682219b789e546cf3094bc", "valibot@b352de9cb9535f39ea682219b789e546cf3094bc^"],
-  baseline: "valibot@b352de9cb9535f39ea682219b789e546cf3094bc^",
-  target: "valibot@b352de9cb9535f39ea682219b789e546cf3094bc",
+  libs: ["valibot", "zod"],
+  baseline: "zod",
+  target: "valibot",
 
   durationMs: 100,
   iterationsCount: 100,
