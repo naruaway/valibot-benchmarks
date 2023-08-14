@@ -148,7 +148,7 @@ const BenchmarkResultView = ({ result }: { result: BenchmarkResult }) => {
 const linkTw = "text-blue-600 dark:text-blue-500 hover:underline";
 
 export default function Page() {
-  const resultsDir = './results'
+  const resultsDir = "./results";
 
   const data: Array<{ name: string; data: BenchmarkResults }> = fs
     .readdirSync(resultsDir)
@@ -157,7 +157,6 @@ export default function Page() {
       name: item.replace(/\.json$/, ""),
       data: JSON.parse(fs.readFileSync(path.join(resultsDir, item), "utf-8")),
     }));
-  console.log(data)
 
   return (
     <div className="m-10">

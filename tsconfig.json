@@ -29,6 +29,12 @@
       }
     ]
   },
-  "include": ["./src/**/*", "./app/**/*", ".next/types/**/*.ts", "./config.ts", "./npm-scripts/**/*"],
+  "include": [
+    "./src/**/*",
+    "./app/**/*",
+    ".next/types/**/*.ts",
+    "./config.ts",
+    "./npm-scripts/**/*"
+  ],
   "exclude": ["node_modules"]
 }

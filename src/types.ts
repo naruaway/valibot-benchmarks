@@ -2,8 +2,6 @@ export type RunnerType = "nodejs" | "bun" | "deno" | "quickjs";
 
 export interface BenchmarkConfig {
   libs: string[];
-  target: string;
-  baseline: string;
   durationMs: number;
   iterationsCount: number;
   runners: RunnerType[];

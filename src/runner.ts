@@ -11,7 +11,10 @@ import * as path from "node:path";
 import { detectOsType } from "./util";
 
 const runCmd = (cmd: string, args: string[]) => {
-  const ret = spawnSync(cmd, args, { encoding: "utf-8", env: { ...process.env, NODE_ENV: 'production' } });
+  const ret = spawnSync(cmd, args, {
+    encoding: "utf-8",
+    env: { ...process.env, NODE_ENV: "production" },
+  });
   if (ret.status !== 0) {
     console.error(ret);
     throw new Error("Runner failure");
@@ -124,14 +127,23 @@ const relativeMetrics = ({
 let slowerCount = 0,
   fasterCount = 0;
 
-const runBenchmark = (config: BenchmarkConfig, runner: Runner): BenchmarkResults => {
+const runBenchmark = (
+  config: BenchmarkConfig,
+  runner: Runner,
+): BenchmarkResults => {
   const benchmarkResult = Object.fromEntries(
     Object.entries(TEST_DATA(config)).map(([testDataName, testData]) => [
       testDataName,
       Object.fromEntries(
         testData.data.map((data) => [
           data.name,
-          runBenchmarkWithRunner(config, testDataName, testData.schema, data, runner),
+          runBenchmarkWithRunner(
+            config,
+            testDataName,
+            testData.schema,
+            data,
+            runner,
+          ),
         ]),
       ),
     ]),
@@ -142,24 +154,24 @@ const runBenchmark = (config: BenchmarkConfig, runner: Runner): BenchmarkResults
   );
   for (const [testDataName, dataList] of Object.entries(benchmarkResult)) {
     for (const [dataName, results] of Object.entries(dataList)) {
-      console.log(`case: "${testDataName}", data: "${dataName}"`);
-      const baseline = assertNonNull(results[config.baseline]);
-      const target = assertNonNull(results[config.target]);
-
-      const { message, isFaster } = relativeMetrics({
-        target: target.mean,
-        baseline: baseline.mean,
-      });
-      if (isFaster) {
-        fasterCount++;
-      } else {
-        slowerCount++;
-      }
-
-      console.log(` ${message}`);
-
-      console.log(`  baseline: ${formatStat(baseline)}`);
-      console.log(`  target: ${formatStat(target)}`);
+      // console.log(`case: "${testDataName}", data: "${dataName}"`);
+      // const baseline = assertNonNull(results[config.baseline]);
+      // const target = assertNonNull(results[config.target]);
+      //
+      // const { message, isFaster } = relativeMetrics({
+      //   target: target.mean,
+      //   baseline: baseline.mean,
+      // });
+      // if (isFaster) {
+      //   fasterCount++;
+      // } else {
+      //   slowerCount++;
+      // }
+      //
+      // console.log(` ${message}`);
+      //
+      // console.log(`  baseline: ${formatStat(baseline)}`);
+      // console.log(`  target: ${formatStat(target)}`);
     }
   }
 
@@ -177,23 +189,37 @@ const runBenchmark = (config: BenchmarkConfig, runner: Runner): BenchmarkResults
   };
 };
 
-export const runBenchmarks = async (config: BenchmarkConfig) => {
+import * as d3 from "d3-array";
+export const runFixedBenchmarks = (
+  runnerList: RunnerType[],
+): Record<RunnerType, number> => {
+  const metrics: Record<string, number[]> = Object.fromEntries(
+    runnerList.map((runnerType) => [runnerType, []]),
+  );
 
+  for (let i = 0; i < 100; ++i) {
+    for (const runnerType of runnerList) {
+      const result = runners[runnerType].run(
+        "./resources/fixed-benchmark-script.js",
+      );
+      metrics[runnerType]!.push(result.opsPerSecond);
+    }
+  }
+  return Object.fromEntries(
+    runnerList.map((runnerType) => [
+      runnerType,
+      d3.median(metrics[runnerType]!)!,
+    ]),
+  ) as Record<RunnerType, number>;
+};
+
+export const runBenchmarks = async (
+  config: BenchmarkConfig,
+): Promise<Record<string, BenchmarkResults>> => {
+  const resultsPerRunner: Record<string, BenchmarkResults> = {};
   for (const runnerType of config.runners) {
     console.log(`Running benchmarks using ${runnerType}`);
-    const result = runBenchmark(config, runners[runnerType]);
-    const resultDir = path.join("results", detectOsType());
-    fs.mkdirSync(resultDir, { recursive: true });
-    fs.writeFileSync(
-      path.join(resultDir, runnerType + ".json"),
-      JSON.stringify(result),
-    );
+    resultsPerRunner[runnerType] = runBenchmark(config, runners[runnerType]);
   }
-
-  console.log(
-    `out of ${fasterCount + slowerCount
-    } cases, ${fasterCount} cases (${percentage(
-      fasterCount / (fasterCount + slowerCount),
-    )}) were faster`,
-  );
-}
+  return resultsPerRunner;
+};

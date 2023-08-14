@@ -16,7 +16,9 @@ export const assertNonNull = <T>(x: T | null | undefined): T => {
   return x;
 };
 
-const runWebpack = (webpackConfig: webpack.Configuration): Promise<webpack.Stats> =>
+const runWebpack = (
+  webpackConfig: webpack.Configuration,
+): Promise<webpack.Stats> =>
   new Promise((resolve, reject) => {
     webpack(webpackConfig, (err, stats) => {
       if (err) {
@@ -141,9 +143,10 @@ export const buildForConfig = async (config: BenchmarkConfig) => {
       const tmpFile = writeTmpFile(`
         ${isValibot(schema) ? "import { safeParse } from 'valibot';" : ""}
         import schema from ${JSON.stringify(schema.filePath)};
-        globalThis.BENCHMARK_VAR_SCHEMA_SAFE_PARSE = ${isValibot(schema)
-          ? "(data) => safeParse(schema, data)"
-          : "(data) => schema.safeParse(data)"
+        globalThis.BENCHMARK_VAR_SCHEMA_SAFE_PARSE = ${
+          isValibot(schema)
+            ? "(data) => safeParse(schema, data)"
+            : "(data) => schema.safeParse(data)"
         };
     `);
       await build({
@@ -178,4 +181,4 @@ export const buildForConfig = async (config: BenchmarkConfig) => {
     }
   }
   fs.unlinkSync(tmpEntryFilePath);
-}
+};
