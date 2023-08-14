@@ -63,7 +63,4 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v5
       - name: Enable Pull Request Automerge
-        uses: peter-evans/enable-pull-request-automerge@v3
-        with:
-          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
-          merge-method: squash
+        run: gh pr merge ${{ steps.cpr.outputs.pull-request-number }}
