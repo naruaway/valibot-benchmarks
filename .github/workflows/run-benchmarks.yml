@@ -43,7 +43,7 @@ jobs:
       id-token: write
       issues: read
       contents: write
-      pull-requests: read
+      pull-requests: write
     needs: build
     runs-on: ubuntu-latest
     steps:
