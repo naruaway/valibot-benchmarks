@@ -11,15 +11,15 @@ const metaData = await getMetaData();
 const valibotCommit = "ea4e6f39dce43cfc49eb542b1b200fb5a904b1ae";
 type Lib =
   | {
-      type: "valibot";
-      repo?: {
-        path: string;
-        commit: string;
-      };
-    }
-  | {
-      type: "zod";
+    type: "valibot";
+    repo?: {
+      path: string;
+      commit: string;
     };
+  }
+  | {
+    type: "zod";
+  };
 
 const config: { libs: Lib[] } = {
   libs: [
@@ -44,7 +44,7 @@ for (const lib of config.libs) {
         await $`./scripts/prepare-valibot.sh ${l.repo.path} ${l.repo.commit}`;
       }
     })
-    .with({ type: "zod" }, async () => {})
+    .with({ type: "zod" }, async () => { })
     .exhaustive();
 }
 
@@ -73,7 +73,7 @@ const benchmarkResult = await runBenchmarks(benchmarkConfig);
 console.dir({ fixedBenchmarks, benchmarkResult }, { depth: null });
 
 const resultsDir = path.join(
-  "./results/valibot/commits",
+  "./results-tmp/valibot/commits",
   valibotCommit,
   detectOsType(),
 );

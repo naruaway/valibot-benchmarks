@@ -34,11 +34,11 @@ jobs:
         with:
           version: 8
       - name: Run benchmarks
-        run: echo helloworld > myfile.txt
+        run: npm ci && npm run ci:pickup-orders
       - uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.os }}
-          path: myfile.txt
+          path: ./results-tmp
       # - name: Commit
       #   uses: EndBug/add-and-commit@v9
       #   with:
@@ -52,6 +52,6 @@ jobs:
     steps:
       - uses: actions/download-artifact@v3
         with:
-          path: myartifacts
+          path: downloaded-artifacts
       - name: finalize
-        run: find ./myartifacts
+        run: find ./downloaded-artifacts
