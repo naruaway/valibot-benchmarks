@@ -68,9 +68,8 @@ const Label = ({
   colorTw?: string;
   href?: string;
 }) => {
-  const className = `${bgColorTw ? bgColorTw : "bg-slate-100"} ${
-    colorTw ?? ""
-  } rounded px-2 py-1 mr-2`;
+  const className = `${bgColorTw ? bgColorTw : "bg-slate-100"} ${colorTw ?? ""
+    } rounded px-2 py-1 mr-2`;
   return href ? (
     <a className={className} href={href}>
       {children}
@@ -149,12 +148,14 @@ const BenchmarkResultView = ({ result }: { result: BenchmarkResult }) => {
 const linkTw = "text-blue-600 dark:text-blue-500 hover:underline";
 
 export default function Page() {
+  const resultsDir = './results/macos'
+
   const data: Array<{ name: string; data: BenchmarkResults }> = fs
-    .readdirSync("./results")
+    .readdirSync(resultsDir)
     .filter((item) => item.endsWith(".json"))
     .map((item) => ({
       name: item.replace(/\.json$/, ""),
-      data: JSON.parse(fs.readFileSync(path.join("./results", item), "utf-8")),
+      data: JSON.parse(fs.readFileSync(path.join(resultsDir, item), "utf-8")),
     }));
 
   return (
