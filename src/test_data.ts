@@ -1,10 +1,9 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { loadConfig } from "./load_config";
+import type { BenchmarkConfig } from "./types";
 
 const testDataRootDir = path.resolve("test_data");
 
-const config = loadConfig();
 
 export interface Schema {
   name: string;
@@ -22,7 +21,7 @@ export const isValibot = (schema: Schema): boolean => {
 
 type TestData = Record<string, { schema: Schema[]; data: Data[] }>;
 
-export const TEST_DATA: TestData = Object.fromEntries(
+export const TEST_DATA = (config: BenchmarkConfig): TestData => Object.fromEntries(
   fs.readdirSync(testDataRootDir).map((testDataName) => {
     const testDataDir = path.join(testDataRootDir, testDataName);
     const schemaDir = path.join(testDataDir, "schema");

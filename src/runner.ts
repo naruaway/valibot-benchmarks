@@ -5,16 +5,13 @@ import {
   type Data,
   type Schema,
 } from "./test_data";
-import { loadConfig } from "./load_config";
-import type { BenchmarkResults, RunnerType } from "./types";
+import type { BenchmarkConfig, BenchmarkResults, RunnerType } from "./types";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { detectOsType } from "./util";
 
-const config = loadConfig();
-
 const runCmd = (cmd: string, args: string[]) => {
-  const ret = spawnSync(cmd, args, { encoding: "utf-8" });
+  const ret = spawnSync(cmd, args, { encoding: "utf-8", env: { ...process.env, NODE_ENV: 'production' } });
   if (ret.status !== 0) {
     console.error(ret);
     throw new Error("Runner failure");
@@ -81,6 +78,7 @@ const formatStat = (stat: BenchmarkStat) => {
 };
 
 const runBenchmarkWithRunner = (
+  config: BenchmarkConfig,
   testDataName: string,
   schemaList: Schema[],
   data: Data,
@@ -126,14 +124,14 @@ const relativeMetrics = ({
 let slowerCount = 0,
   fasterCount = 0;
 
-const runBenchmark = (runner: Runner): BenchmarkResults => {
+const runBenchmark = (config: BenchmarkConfig, runner: Runner): BenchmarkResults => {
   const benchmarkResult = Object.fromEntries(
-    Object.entries(TEST_DATA).map(([testDataName, testData]) => [
+    Object.entries(TEST_DATA(config)).map(([testDataName, testData]) => [
       testDataName,
       Object.fromEntries(
         testData.data.map((data) => [
           data.name,
-          runBenchmarkWithRunner(testDataName, testData.schema, data, runner),
+          runBenchmarkWithRunner(config, testDataName, testData.schema, data, runner),
         ]),
       ),
     ]),
@@ -179,21 +177,23 @@ const runBenchmark = (runner: Runner): BenchmarkResults => {
   };
 };
 
-for (const runnerType of config.runners) {
-  console.log(`Running benchmarks using ${runnerType}`);
-  const result = runBenchmark(runners[runnerType]);
-  const resultDir = path.join("results", detectOsType());
-  fs.mkdirSync(resultDir, { recursive: true });
-  fs.writeFileSync(
-    path.join(resultDir, runnerType + ".json"),
-    JSON.stringify(result),
+export const runBenchmarks = async (config: BenchmarkConfig) => {
+
+  for (const runnerType of config.runners) {
+    console.log(`Running benchmarks using ${runnerType}`);
+    const result = runBenchmark(config, runners[runnerType]);
+    const resultDir = path.join("results", detectOsType());
+    fs.mkdirSync(resultDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(resultDir, runnerType + ".json"),
+      JSON.stringify(result),
+    );
+  }
+
+  console.log(
+    `out of ${fasterCount + slowerCount
+    } cases, ${fasterCount} cases (${percentage(
+      fasterCount / (fasterCount + slowerCount),
+    )}) were faster`,
   );
 }
-
-console.log(
-  `out of ${
-    fasterCount + slowerCount
-  } cases, ${fasterCount} cases (${percentage(
-    fasterCount / (fasterCount + slowerCount),
-  )}) were faster`,
-);

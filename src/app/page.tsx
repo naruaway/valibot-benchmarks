@@ -157,6 +157,7 @@ export default function Page() {
       name: item.replace(/\.json$/, ""),
       data: JSON.parse(fs.readFileSync(path.join(resultsDir, item), "utf-8")),
     }));
+  console.log(data)
 
   return (
     <div className="m-10">
