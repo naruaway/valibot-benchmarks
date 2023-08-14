@@ -54,7 +54,7 @@ jobs:
           path: downloaded-artifacts
       # TODO: verify the correctness of downloaded artifacts
       - name: finalize
-        run: cp -r ./downloaded-artifacts/ubuntu-latest/ ./results/ && cp -r ./downloaded-artifacts/macos-latest/ ./results/
+        run: rsync -a ./downloaded-artifacts/ubuntu-latest/ ./results/ && rsync -a ./downloaded-artifacts/macos-latest/ ./results/
       - name: check
         run: find ./results
 
