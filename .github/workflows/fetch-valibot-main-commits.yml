@@ -8,4 +8,5 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - run: "git clone https://github.com/fabian-hiller/valibot.git valibotdir"
-      - run: "ls -lh valibotdir"
+      - run: "git -C valibotdir log -n 5"
+      - run: "git log -n 5"
