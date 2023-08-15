@@ -5,7 +5,7 @@ import * as fs from "node:fs";
 
 export const getPendingValibotCommit = (): string | undefined => {
   const pendingTasksDir = './pending_tasks'
-  const pendingTaskFiles = fs.readdirSync(pendingTasksDir).sort()
+  const pendingTaskFiles = fs.readdirSync(pendingTasksDir).filter(n => n.endsWith('.json')).sort()
   if (pendingTaskFiles.length === 0) return undefined
 
   const pendingTaskFileName = pendingTaskFiles[0]!
