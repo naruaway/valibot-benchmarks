@@ -9,7 +9,12 @@ export default [
   },
   {
     plugins: { "@typescript-eslint": typescriptEslint },
-    files: ["src/**/*.ts"],
+    files: [
+      "src/**/*.ts",
+      "app/**/*.ts",
+      "config.ts",
+      "npm-scripts/**/*.ts"
+    ],
     languageOptions: {
       parser: typescriptEslintParser,
       parserOptions: {
