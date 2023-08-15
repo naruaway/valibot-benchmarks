@@ -7,6 +7,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - run: "git clone https://github.com/fabian-hiller/valibot.git valibotdir"
-      - run: "git -C valibotdir log -n 5"
-      - run: "git log -n 5"
+        with:
+          # Use Personal Access Token explicitly here so that "git push" in this job later can trigger subsequent workflows (https://docs.github.com/en/actions/security-guides/automatic-token-authentication#using-the-github_token-in-a-workflow)
+          token: ${{ secrets.VALIBOT_BENCHMARKS_AUTOMATION_TOKEN }}
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+      - run: "npm ci && ./node_modules/.bin/tsx npm-scripts/fetch-valibot-main-commits.ts"
+      - name: Commit
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: "['./results', './pending_tasks']"
+          pull: "--rebase --autostash"
+          default_author: github_actions
+          message: "Update valibot main commits"
