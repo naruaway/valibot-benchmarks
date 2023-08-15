@@ -65,4 +65,4 @@ jobs:
       - name: Enable Pull Request Automerge
         run: gh pr merge --rebase ${{ steps.cpr.outputs.pull-request-number }}
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.VALIBOT_BENCHMARKS_AUTOMATION_TOKEN }}
