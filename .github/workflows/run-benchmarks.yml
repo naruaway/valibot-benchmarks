@@ -50,6 +50,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
+          # Use Personal Access Token explicitly here so that "git push" in this job later can trigger subsequent workflows (https://docs.github.com/en/actions/security-guides/automatic-token-authentication#using-the-github_token-in-a-workflow)
           token: ${{ secrets.VALIBOT_BENCHMARKS_AUTOMATION_TOKEN }}
       - uses: actions/download-artifact@v3
         with:
