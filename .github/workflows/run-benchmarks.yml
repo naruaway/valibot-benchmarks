@@ -43,12 +43,14 @@ jobs:
       id-token: write
       issues: read
       contents: write
-      pull-requests: write
+      pull-requests: read
     needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.VALIBOT_BENCHMARKS_AUTOMATION_TOKEN }}
       - uses: actions/download-artifact@v3
         with:
           path: downloaded-artifacts
@@ -59,10 +61,10 @@ jobs:
         run: npm ci && npm run ci:finalize-pending-tasks
       - name: check
         run: find ./results
-      - name: Create Pull Request
-        id: cpr
-        uses: peter-evans/create-pull-request@v5
-      - name: Enable Pull Request Automerge
-        run: gh pr merge --rebase ${{ steps.cpr.outputs.pull-request-number }}
-        env:
-          GH_TOKEN: ${{ secrets.VALIBOT_BENCHMARKS_AUTOMATION_TOKEN }}
+      - name: Commit
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: "['./results', './pending_tasks']"
+          pull: "--rebase --autostash"
+          default_author: github_actions
+          message: "Update benchmark results"
