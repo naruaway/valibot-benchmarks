@@ -57,7 +57,7 @@ jobs:
           path: downloaded-artifacts
       # TODO: verify the correctness of downloaded artifacts
       - name: finalize
-        run: rsync -a ./downloaded-artifacts/ubuntu-latest/ ./results/ && rsync -a ./downloaded-artifacts/macos-latest/ ./results/
+        run: rsync -a ./downloaded-artifacts/ubuntu-latest/ ./results/
       - name: updatependingtasksdir
         run: npm ci && npm run ci:finalize-pending-tasks
       - name: check
