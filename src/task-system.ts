@@ -35,6 +35,10 @@ export const getTaskInput = (): TaskInput | undefined => {
   return value
 }
 
+export const cleanUpTaskInput = (taskInput: TaskInput) => {
+  fs.unlinkSync(path.join(PENDING_TASKS_DIR, taskInput.commit + '.json'))
+}
+
 export const storeNewTaskInput = (input: TaskInput) => {
   fs.mkdirSync(PENDING_TASKS_DIR, { recursive: true })
   const pendingTaskFilePath = path.join(PENDING_TASKS_DIR, `${input.commit}.json`)

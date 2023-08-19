@@ -10,10 +10,9 @@ on:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        os: ["ubuntu-latest"]
-    runs-on: ${{ matrix.os }}
+    # "macOS" is slow, "windows" is tricky to make it work (not unix-like...), let's only use ubuntu-latest
+    # Also anyway all machines seem to be still x64
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -37,8 +36,9 @@ jobs:
         run: npm ci && npm run ci:pickup-orders
       - uses: actions/upload-artifact@v3
         with:
-          name: ${{ matrix.os }}
+          name: ubuntu-latest
           path: ./results-tmp
+  # we separate this job out of actual benchmarking job to avoid exposing secure token for untrusted code
   finalize:
     permissions:
       id-token: write
