@@ -1,14 +1,14 @@
 import { $ } from "zx";
 import { match } from "ts-pattern";
-import { assertNonNull, buildForConfig } from "../src/build";
+import { buildForConfig } from "../src/build";
 import type { BenchmarkConfig } from "../src/types";
 import { runBenchmarks, runFixedBenchmarks } from "../src/runner";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { detectOsType, getMetaData, getPendingValibotCommit } from "../src/util";
+import { detectOsType, getMetaData, } from "../src/util";
+import { getTaskInput } from "../src/task-system";
 
-
-const valibotCommit = getPendingValibotCommit()
+const valibotCommit = getTaskInput()
 
 if (!valibotCommit) {
   console.log('no pending tasks')
@@ -32,8 +32,8 @@ if (!valibotCommit) {
       {
         type: "valibot",
         repo: {
-          path: "fabian-hiller/valibot",
-          commit: valibotCommit,
+          path: valibotCommit.repo,
+          commit: valibotCommit.commit,
         },
       },
     ],
@@ -75,7 +75,7 @@ if (!valibotCommit) {
 
   const resultsDir = path.join(
     "./results-tmp/valibot/commits",
-    valibotCommit,
+    valibotCommit.commit,
     detectOsType(),
   );
 

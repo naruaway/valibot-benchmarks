@@ -1,23 +1,16 @@
 import * as fs from "node:fs";
-import * as path from "node:path";
 import { $ } from "zx";
+import { isValibotCommitTaskAlreadyRecognized, storeNewTaskInput } from "../src/task-system";
 
-function isValibotCommitNotRecognized(valibotCommit: string): boolean {
-  return (
-    !fs.existsSync(
-      path.join("pending_tasks", `valibot-commit-${valibotCommit}.json`),
-    ) && !fs.existsSync(path.join("results/valibot/commits", valibotCommit))
-  );
-}
-
+const REPO = 'fabian-hiller/valibot'
 /**
- * New enough commit. This is just a random choice
+ * This is just a random "new enough" commit
  */
 const startCommit = "57dc8532094617a0576982a8d1f63121eaf5f417";
 
 const tmpValibotGitDir = "tmpValibotGitDir";
 
-await $`git -c core.hooksPath=/dev/null clone https://github.com/fabian-hiller/valibot.git ${tmpValibotGitDir}`;
+await $`git -c core.hooksPath=/dev/null clone https://github.com/${REPO}.git ${tmpValibotGitDir}`;
 
 const valibotMainCommits = (
   await $`git -c core.hooksPath=/dev/null -C ${tmpValibotGitDir} log --first-parent --pretty=%H ${startCommit}..main`.quiet()
@@ -28,10 +21,12 @@ const valibotMainCommits = (
 
 fs.rmSync(tmpValibotGitDir, { recursive: true });
 
-const newCommits = valibotMainCommits.filter(isValibotCommitNotRecognized);
+const newCommits = valibotMainCommits.filter(commit => !isValibotCommitTaskAlreadyRecognized({ valibotCommit: commit }));
+
 for (const newValibotCommit of newCommits) {
-  fs.writeFileSync(
-    path.join("pending_tasks", `valibot-commit-${newValibotCommit}.json`),
-    JSON.stringify({}),
-  );
+  storeNewTaskInput({
+    type: 'valibot-commit',
+    repo: REPO,
+    commit: newValibotCommit,
+  })
 }
