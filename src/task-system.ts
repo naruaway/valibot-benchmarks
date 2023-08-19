@@ -5,6 +5,7 @@ import * as fs from "node:fs";
 
 const PENDING_TASKS_DIR = './pending_tasks/valibot/commits'
 const VALIBOT_COMMIT_OUT_DIR = 'results/valibot/commits'
+const VALIBOT_COMMITS = 'results/valibot-commits.json'
 
 const TaskInput = v.object({
   type: v.literal('valibot-commit'),
@@ -37,6 +38,10 @@ export const getTaskInput = (): TaskInput | undefined => {
 
 export const cleanUpTaskInput = (taskInput: TaskInput) => {
   fs.unlinkSync(path.join(PENDING_TASKS_DIR, taskInput.commit + '.json'))
+}
+
+export const storeValibotCommits = (mainCommits: { commit: string }[]) => {
+  fs.writeFileSync(VALIBOT_COMMITS, JSON.stringify({ mainCommits }))
 }
 
 export const storeNewTaskInput = (input: TaskInput) => {
