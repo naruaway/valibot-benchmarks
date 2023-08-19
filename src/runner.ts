@@ -6,9 +6,6 @@ import {
   type Schema,
 } from "./test_data";
 import type { BenchmarkConfig, BenchmarkResults, RunnerType } from "./types";
-import * as fs from "node:fs";
-import * as path from "node:path";
-import { detectOsType } from "./util";
 
 const runCmd = (cmd: string, args: string[]) => {
   const ret = spawnSync(cmd, args, {
@@ -124,9 +121,6 @@ const relativeMetrics = ({
   }
 };
 
-let slowerCount = 0,
-  fasterCount = 0;
-
 const runBenchmark = (
   config: BenchmarkConfig,
   runner: Runner,
@@ -150,30 +144,8 @@ const runBenchmark = (
   );
 
   console.log(
-    `Showing the result when running runtime environment (e.g. Node.js) ${config.iterationsCount} times for each:`,
+    `Running benchmark...`,
   );
-  for (const [testDataName, dataList] of Object.entries(benchmarkResult)) {
-    for (const [dataName, results] of Object.entries(dataList)) {
-      // console.log(`case: "${testDataName}", data: "${dataName}"`);
-      // const baseline = assertNonNull(results[config.baseline]);
-      // const target = assertNonNull(results[config.target]);
-      //
-      // const { message, isFaster } = relativeMetrics({
-      //   target: target.mean,
-      //   baseline: baseline.mean,
-      // });
-      // if (isFaster) {
-      //   fasterCount++;
-      // } else {
-      //   slowerCount++;
-      // }
-      //
-      // console.log(` ${message}`);
-      //
-      // console.log(`  baseline: ${formatStat(baseline)}`);
-      // console.log(`  target: ${formatStat(target)}`);
-    }
-  }
 
   return {
     results: Object.entries(benchmarkResult).map(([schemaName, b]) => ({

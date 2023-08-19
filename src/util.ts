@@ -1,19 +1,10 @@
 import * as os from "node:os";
 import { $ } from "zx";
+import * as path from 'node:path'
+import * as v from 'valibot'
 
 import * as fs from "node:fs";
 
-export const getPendingValibotCommit = (): string | undefined => {
-  const pendingTasksDir = './pending_tasks'
-  const pendingTaskFiles = fs.readdirSync(pendingTasksDir).filter(n => n.endsWith('.json')).sort()
-  if (pendingTaskFiles.length === 0) return undefined
-
-  const pendingTaskFileName = pendingTaskFiles[0]!
-  const m = pendingTaskFileName.match(/^valibot-commit-([a-z0-9]+)\.json$/)
-  if (!m) throw new Error('invalid filename for pendingTaskFileName: ' + pendingTaskFileName)
-  console.log(`processing ${pendingTasksDir}/${pendingTaskFileName}`)
-  return m[1]
-}
 export const detectOsType = (): "linux" | "macos" | "windows" => {
   const osType = os.type();
   if (osType.startsWith("Darwin")) return "macos";
