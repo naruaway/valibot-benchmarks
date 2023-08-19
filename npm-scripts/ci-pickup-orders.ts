@@ -5,13 +5,14 @@ import type { BenchmarkConfig } from "../src/types";
 import { runBenchmarks, runFixedBenchmarks } from "../src/runner";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { detectOsType, getMetaData, } from "../src/util";
+import { detectOsType, getMetaData } from "../src/util";
 import { getTaskInput } from "../src/task-system";
+import { TEST_DATA } from "../src/test_data";
 
-const valibotCommit = getTaskInput()
+const valibotCommit = getTaskInput();
 
 if (!valibotCommit) {
-  console.log('no pending tasks')
+  console.log("no pending tasks");
 } else {
   const metaData = await getMetaData();
 
@@ -69,6 +70,22 @@ if (!valibotCommit) {
   };
 
   await buildForConfig(benchmarkConfig);
+  const testData = TEST_DATA(benchmarkConfig);
+  const schemaNames = Object.keys(testData);
+  await $`gzip --keep --best dist/schema/*.js`;
+
+  const keysToObj = <T>(
+    keys: string[],
+    mapFn: (key: string) => T,
+  ): Record<string, T> =>
+    Object.fromEntries(keys.map((key) => [key, mapFn(key)]));
+
+  const scriptSizes = keysToObj(schemaNames, (schemaName) =>
+    keysToObj(benchmarkConfig.libs, (lib) => ({
+      raw: fs.statSync(`dist/schema/${schemaName}__${lib}.js`).size,
+      gzip: fs.statSync(`dist/schema/${schemaName}__${lib}.js.gz`).size,
+    })),
+  );
 
   const fixedBenchmarks = runFixedBenchmarks(["nodejs", "bun"], 100);
   const benchmarkResult = await runBenchmarks(benchmarkConfig);
@@ -84,6 +101,7 @@ if (!valibotCommit) {
   fs.writeFileSync(
     path.join(resultsDir, "result.json"),
     JSON.stringify({
+      scriptSizes,
       fixedBenchmarks,
       benchmarkResult,
       meta: metaData,
