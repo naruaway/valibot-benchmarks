@@ -1,3 +1,4 @@
+concurrency: task_system
 on:
   workflow_dispatch:
 
