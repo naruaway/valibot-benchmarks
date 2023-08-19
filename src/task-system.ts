@@ -51,8 +51,8 @@ export const storeNewTaskInput = (input: TaskInput) => {
 
 export const isValibotCommitTaskAlreadyRecognized = ({ valibotCommit }: { valibotCommit: string }) => {
   return (
-    !fs.existsSync(
+    fs.existsSync(
       path.join(PENDING_TASKS_DIR, `${valibotCommit}.json`),
-    ) && !fs.existsSync(path.join(VALIBOT_COMMIT_OUT_DIR, valibotCommit))
+    ) || fs.existsSync(path.join(VALIBOT_COMMIT_OUT_DIR, valibotCommit))
   );
 }
