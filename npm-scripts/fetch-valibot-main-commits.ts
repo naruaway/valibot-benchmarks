@@ -1,6 +1,6 @@
 import * as fs from "node:fs";
 import { $ } from "zx";
-import { isValibotCommitTaskAlreadyRecognized, storeNewTaskInput } from "../src/task-system";
+import { isValibotCommitTaskAlreadyRecognized, storeNewTaskInput, storeValibotCommits } from "../src/task-system";
 
 const REPO = 'fabian-hiller/valibot'
 /**
@@ -22,6 +22,8 @@ const valibotMainCommits = (
 fs.rmSync(tmpValibotGitDir, { recursive: true });
 
 const newCommits = valibotMainCommits.filter(commit => !isValibotCommitTaskAlreadyRecognized({ valibotCommit: commit }));
+
+storeValibotCommits(valibotMainCommits.map(commit => ({ commit })))
 
 for (const newValibotCommit of newCommits) {
   storeNewTaskInput({
