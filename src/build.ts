@@ -143,10 +143,9 @@ export const buildForConfig = async (config: BenchmarkConfig) => {
       const tmpFile = writeTmpFile(`
         ${isValibot(schema) ? "import { safeParse } from 'valibot';" : ""}
         import schema from ${JSON.stringify(schema.filePath)};
-        globalThis.BENCHMARK_VAR_SCHEMA_SAFE_PARSE = ${
-          isValibot(schema)
-            ? "(data) => safeParse(schema, data)"
-            : "(data) => schema.safeParse(data)"
+        globalThis.BENCHMARK_VAR_SCHEMA_SAFE_PARSE = ${isValibot(schema)
+          ? "(data) => safeParse(schema, data)"
+          : "(data) => schema.safeParse(data)"
         };
     `);
       await build({
@@ -174,7 +173,7 @@ export const buildForConfig = async (config: BenchmarkConfig) => {
       ${generateBenchmarkJs(config)}`;
         fs.mkdirSync("dist/benchmark", { recursive: true });
         fs.writeFileSync(
-          getBenchmarkJsFilePath(testDataName, { data, schema }),
+          getBenchmarkJsFilePath({ schema: testDataName, data: data.name, lib: schema.name }),
           benchmarkJsCode,
         );
       }
