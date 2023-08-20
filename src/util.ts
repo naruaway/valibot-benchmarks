@@ -13,7 +13,7 @@ export const detectOsType = (): "linux" | "macos" | "windows" => {
   throw new Error(`FIXME: Unknown OS: ${osType}`);
 };
 
-export const getMetaData = async () => {
+export const getMetaData = async (opts: { startTime: number, endTime: number }) => {
   return {
     os: detectOsType(),
     arch: os.arch(),
@@ -26,5 +26,6 @@ export const getMetaData = async () => {
     npm: {
       version: (await $`npm --version`).stdout.trim(),
     },
+    ...opts
   };
 };
