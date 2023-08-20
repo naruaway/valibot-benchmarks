@@ -63,7 +63,7 @@ if (!valibotCommit) {
   const benchmarkConfig: BenchmarkConfig = {
     libs,
 
-    durationMs: 100,
+    durationMs: 1000,
     iterationsCount: 100,
 
     runners: ["nodejs", "bun"],
