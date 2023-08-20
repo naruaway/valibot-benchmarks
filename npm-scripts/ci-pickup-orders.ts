@@ -70,24 +70,7 @@ if (!valibotCommit) {
   };
 
   await buildForConfig(benchmarkConfig);
-  const testData = TEST_DATA(benchmarkConfig);
-  const schemaNames = Object.keys(testData);
-  await $`gzip --keep --best dist/schema/*.js`;
 
-  const keysToObj = <T>(
-    keys: string[],
-    mapFn: (key: string) => T,
-  ): Record<string, T> =>
-    Object.fromEntries(keys.map((key) => [key, mapFn(key)]));
-
-  const scriptSizes = keysToObj(schemaNames, (schemaName) =>
-    keysToObj(benchmarkConfig.libs, (lib) => ({
-      raw: fs.statSync(`dist/schema/${schemaName}__${lib}.js`).size,
-      gzip: fs.statSync(`dist/schema/${schemaName}__${lib}.js.gz`).size,
-    })),
-  );
-
-  const fixedBenchmarks = runFixedBenchmarks(["nodejs", "bun"], 100);
   const benchmarkResult = await runBenchmarks(benchmarkConfig);
 
   const resultsDir = path.join(
@@ -100,11 +83,6 @@ if (!valibotCommit) {
 
   fs.writeFileSync(
     path.join(resultsDir, "result.json"),
-    JSON.stringify({
-      scriptSizes,
-      fixedBenchmarks,
-      benchmarkResult,
-      meta: metaData,
-    }),
+    JSON.stringify(benchmarkResult),
   );
 }
