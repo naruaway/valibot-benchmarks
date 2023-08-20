@@ -6,6 +6,10 @@ import {
   type Schema,
 } from "./test_data";
 import type { BenchmarkConfig, BenchmarkResults, RunnerType } from "./types";
+import arrayShuffle from "array-shuffle";
+import deepmerge from "deepmerge";
+import { $ } from 'zx'
+import * as fs from 'node:fs'
 
 const runCmd = (cmd: string, args: string[]) => {
   const ret = spawnSync(cmd, args, {
@@ -90,9 +94,8 @@ const runBenchmarkWithRunner = (
 
   for (let i = 0; i < config.iterationsCount; ++i) {
     for (const schema of schemaList) {
-      const result = runner.run(
-        getBenchmarkJsFilePath(testDataName, { data, schema }),
-      );
+      const fp = getBenchmarkJsFilePath(testDataName, { data, schema });
+      const result = runner.run(fp);
       assertNonNull(opsPerSecondListMap[schema.name]).push(result.opsPerSecond);
     }
   }
@@ -121,50 +124,88 @@ const relativeMetrics = ({
   }
 };
 
-const runBenchmark = (
-  config: BenchmarkConfig,
-  runner: Runner,
-): BenchmarkResults => {
-  const benchmarkResult = Object.fromEntries(
-    Object.entries(TEST_DATA(config)).map(([testDataName, testData]) => [
-      testDataName,
-      Object.fromEntries(
-        testData.data.map((data) => [
-          data.name,
-          runBenchmarkWithRunner(
-            config,
-            testDataName,
-            testData.schema,
-            data,
-            runner,
-          ),
-        ]),
-      ),
-    ]),
-  );
-
-  console.log(
-    `Running benchmark...`,
-  );
-
+const createMapWithDefaultEmptyArray = <T>() => {
+  const map = new Map<string, T[]>();
   return {
-    results: Object.entries(benchmarkResult).map(([schemaName, b]) => ({
-      schemaName,
-      results: Object.entries(b).map(([dataName, c]) => ({
-        dataName,
-        results: Object.entries(c).map(([libName, ret]) => ({
-          libName,
-          opsPerSecond: Math.round(ret.mean),
-        })),
-      })),
-    })),
+    getOrDefault(key: string): T[] {
+      let arr = map.get(key);
+      if (arr) {
+        return arr;
+      } else {
+        arr = [];
+        map.set(key, arr);
+        return arr;
+      }
+    },
+    getOrThrow(key: string): T[] {
+      let arr = map.get(key);
+      if (!arr) throw new Error("item does not exist");
+      return arr;
+    },
   };
 };
 
+interface BenchmarkRet {
+  fixed: { opsPerSecond: number };
+  lib: Record<string, Record<string, Record<string, { opsPerSecond: number }>>>;
+}
+
+const runBenchmark = (
+  config: BenchmarkConfig,
+  runner: Runner,
+): BenchmarkRet => {
+  const schemaList = Object.keys(TEST_DATA(config));
+
+  const combinations = schemaList.flatMap((schema) =>
+    TEST_DATA(config)[schema].data.flatMap((d) =>
+      config.libs.map((lib) => ({
+        lib,
+        schema,
+        data: d.name,
+      })),
+    ),
+  );
+
+  const fixedBenchmarks: number[] = [];
+  const resultMap = createMapWithDefaultEmptyArray<number>();
+
+  for (let i = 0; i < 100; i++) {
+    for (const combination of arrayShuffle(combinations)) {
+      resultMap
+        .getOrDefault(JSON.stringify(combination))
+        .push(runner.run(getBenchmarkJsFilePath(combination)).opsPerSecond);
+      fixedBenchmarks.push(
+        runner.run("./resources/fixed-benchmark-script.js").opsPerSecond,
+      );
+    }
+  }
+
+  const fixed = { opsPerSecond: assertNonNull(d3.median(fixedBenchmarks)) };
+
+  let lib = {};
+
+  for (const combination of combinations) {
+    lib = deepmerge(lib, {
+      [combination.lib]: {
+        [combination.schema]: {
+          [combination.data]: {
+            opsPerSecond: d3.median(
+              resultMap.getOrThrow(JSON.stringify(combination)),
+            ),
+          },
+        },
+      },
+    });
+  }
+
+  return { fixed, lib };
+};
+
 import * as d3 from "d3-array";
+import { getMetaData } from "./util";
 export const runFixedBenchmarks = (
   runnerList: RunnerType[],
-  iterationsCount: number
+  iterationsCount: number,
 ): Record<RunnerType, number> => {
   const metrics: Record<string, number[]> = Object.fromEntries(
     runnerList.map((runnerType) => [runnerType, []]),
@@ -186,13 +227,36 @@ export const runFixedBenchmarks = (
   ) as Record<RunnerType, number>;
 };
 
+const uniq = (xs: Iterable<string>): string[] => Array.from(new Set(xs)).sort()
+
+const keysToObj = <T>(
+  keys: string[],
+  mapFn: (key: string) => T,
+): Record<string, T> =>
+  Object.fromEntries(keys.map((key) => [key, mapFn(key)]));
+
 export const runBenchmarks = async (
   config: BenchmarkConfig,
-): Promise<Record<string, BenchmarkResults>> => {
-  const resultsPerRunner: Record<string, BenchmarkResults> = {};
+): Promise<{ runtime: Record<string, BenchmarkRet>, size: Record<string, Record<string, { raw: number, gzip: number }>>, meta: unknown }> => {
+  const startTime = Date.now()
+  const resultsPerRunner: Record<string, BenchmarkRet> = {};
   for (const runnerType of config.runners) {
     console.log(`Running benchmarks using ${runnerType}`);
     resultsPerRunner[runnerType] = runBenchmark(config, runners[runnerType]);
   }
-  return resultsPerRunner;
+
+  const libList = uniq(Object.values(resultsPerRunner).flatMap(m => Object.keys(m.lib)))
+  const schemaList = uniq(Object.values(resultsPerRunner).flatMap(m => Object.values(m.lib).flatMap(x => Object.keys(x))))
+  console.dir({ libList, schemaList }, { depth: null })
+
+  await $`gzip --keep --best dist/schema/*.js`;
+
+  const size = keysToObj(libList, (lib) =>
+    keysToObj(schemaList, (schema) => ({
+      raw: fs.statSync(`dist/schema/${schema}__${lib}.js`).size,
+      gzip: fs.statSync(`dist/schema/${schema}__${lib}.js.gz`).size,
+    })),
+  );
+
+  return { runtime: resultsPerRunner, size, meta: await getMetaData({ startTime, endTime: Date.now() }) };
 };
