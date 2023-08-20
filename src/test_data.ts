@@ -60,9 +60,14 @@ export const TEST_DATA = (config: BenchmarkConfig): TestData =>
     }),
   );
 
-export const getBenchmarkJsFilePath = (
-  testDataName: string,
-  { schema, data }: { schema: Schema; data: Data },
-): string => {
-  return `dist/benchmark/${testDataName}__${data.name}__${schema.name}.js`;
+export const getBenchmarkJsFilePath = ({
+  schema,
+  data,
+  lib,
+}: {
+  schema: string;
+  data: string;
+  lib: string;
+}): string => {
+  return `dist/benchmark/${schema}__${data}__${lib}.js`;
 };
