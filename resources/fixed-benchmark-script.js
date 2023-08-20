@@ -14,7 +14,7 @@
     }
 
     const elapsedTime = now() - start;
-    if (elapsedTime > 100) {
+    if (elapsedTime > 10) {
        const result = {opsPerSecond: Math.floor(i / (elapsedTime / 1000))};
        if (globalThis.BENCHMARK_VAR_ON_FINISH) {
          globalThis.BENCHMARK_VAR_ON_FINISH(result);
