@@ -36,12 +36,79 @@ export const getTaskInput = (): TaskInput | undefined => {
   return value
 }
 
+export interface NewBenchmarkResult {
+  name: string
+  scriptSize: Record<string, { raw: number, gzip: number }>
+  fixedBenchmarks: Record<string, number>
+  runtime: Record<string, {
+    schema: Record<string, { data: Record<string, { opsPerSecond: number }> }>
+  }>
+}
+
+const readBenchmarkResultData = (filePath: string, name: string): NewBenchmarkResult => {
+  //    scriptSizes: {
+  //   deep: {
+  //     'valibot@6adc7d03b91523329c91bf8e71baf72481d009e6': { raw: 2099, gzip: 917 }
+  //   },
+  //   many_features: {
+  //     'valibot@6adc7d03b91523329c91bf8e71baf72481d009e6': { raw: 3470, gzip: 1210 }
+  //   },
+  //   optional_nullable: {
+  //     'valibot@6adc7d03b91523329c91bf8e71baf72481d009e6': { raw: 2955, gzip: 1129 }
+  //   },
+  //   wide: {
+  //     'valibot@6adc7d03b91523329c91bf8e71baf72481d009e6': { raw: 1720, gzip: 814 }
+  //   }
+  // },
+
+  const data = JSON.parse(
+    fs.readFileSync(
+      filePath,
+      "utf-8",
+    ),
+  );
+
+
+  return {
+    name,
+    meta: data.meta,
+    fixedBenchmarks: data.fixedBenchmarks,
+    scriptSize: Object.fromEntries(Object.entries(data.scriptSizes).map(([k, v]) => [k, Object.entries(v)[0][1]])),
+    runtime: Object.fromEntries(
+      Object.entries(data.benchmarkResult).map(([name, { results }]) => [
+        name,
+        {
+          schema:
+            Object.fromEntries(
+              results.map((r) => [
+                r.schemaName,
+                { data: Object.fromEntries(r.results.map((a) => [a.dataName, a.results[0]])) }
+              ]),
+            ),
+        }
+      ]),
+    )
+  };
+
+}
+
+
+
 export const cleanUpTaskInput = (taskInput: TaskInput) => {
   fs.unlinkSync(path.join(PENDING_TASKS_DIR, taskInput.commit + '.json'))
 }
 
 export const storeValibotCommits = (mainCommits: { commit: string }[]) => {
   fs.writeFileSync(VALIBOT_COMMITS, JSON.stringify({ mainCommits }))
+}
+
+export const getValibotCommitInfo = (commit: string) => {
+  const filePath = path.join(VALIBOT_COMMIT_OUT_DIR, commit, 'linux/result.json')
+  if (fs.existsSync(filePath)) {
+    return readBenchmarkResultData(filePath, `valibot@${commit}`)
+  } else {
+    return undefined
+  }
 }
 
 export const storeNewTaskInput = (input: TaskInput) => {
