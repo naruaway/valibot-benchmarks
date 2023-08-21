@@ -168,14 +168,14 @@ const runBenchmark = (
       [combination.lib]: {
         [combination.schema]: {
           [combination.data]: {
-            opsPerSecond: assertNonNull(d3.median(resultMap.getOrThrow(JSON.stringify(combination)))),
+            opsPerSecond: assertNonNull(/*d3.median*/(resultMap.getOrThrow(JSON.stringify(combination)))),
           },
         },
       },
     });
   }
 
-  return { fixed: { opsPerSecond: assertNonNull(d3.median(fixed.opsPerSecond)) }, lib };
+  return { fixed: { opsPerSecond: assertNonNull(/*d3.median*/(fixed.opsPerSecond)) }, lib };
 };
 
 import * as d3 from "d3-array";
