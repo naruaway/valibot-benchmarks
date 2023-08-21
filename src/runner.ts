@@ -8,8 +8,8 @@ import {
 import type { BenchmarkConfig, BenchmarkResults, RunnerType } from "./types";
 import arrayShuffle from "array-shuffle";
 import deepmerge from "deepmerge";
-import { $ } from 'zx'
-import * as fs from 'node:fs'
+import { $ } from "zx";
+import * as fs from "node:fs";
 
 const runCmd = (cmd: string, args: string[]) => {
   const ret = spawnSync(cmd, args, {
@@ -180,7 +180,7 @@ const runBenchmark = (
     }
   }
 
-  const fixed = { opsPerSecond: assertNonNull(d3.median(fixedBenchmarks)) };
+  const fixed = { opsPerSecond: fixedBenchmarks };
 
   let lib = {};
 
@@ -189,9 +189,7 @@ const runBenchmark = (
       [combination.lib]: {
         [combination.schema]: {
           [combination.data]: {
-            opsPerSecond: d3.median(
-              resultMap.getOrThrow(JSON.stringify(combination)),
-            ),
+            opsPerSecond: resultMap.getOrThrow(JSON.stringify(combination)),
           },
         },
       },
@@ -227,7 +225,7 @@ export const runFixedBenchmarks = (
   ) as Record<RunnerType, number>;
 };
 
-const uniq = (xs: Iterable<string>): string[] => Array.from(new Set(xs)).sort()
+const uniq = (xs: Iterable<string>): string[] => Array.from(new Set(xs)).sort();
 
 const keysToObj = <T>(
   keys: string[],
@@ -237,17 +235,27 @@ const keysToObj = <T>(
 
 export const runBenchmarks = async (
   config: BenchmarkConfig,
-): Promise<{ runtime: Record<string, BenchmarkRet>, size: Record<string, Record<string, { raw: number, gzip: number }>>, meta: unknown }> => {
-  const startTime = Date.now()
+): Promise<{
+  runtime: Record<string, BenchmarkRet>;
+  size: Record<string, Record<string, { raw: number; gzip: number }>>;
+  meta: unknown;
+}> => {
+  const startTime = Date.now();
   const resultsPerRunner: Record<string, BenchmarkRet> = {};
   for (const runnerType of config.runners) {
     console.log(`Running benchmarks using ${runnerType}`);
     resultsPerRunner[runnerType] = runBenchmark(config, runners[runnerType]);
   }
 
-  const libList = uniq(Object.values(resultsPerRunner).flatMap(m => Object.keys(m.lib)))
-  const schemaList = uniq(Object.values(resultsPerRunner).flatMap(m => Object.values(m.lib).flatMap(x => Object.keys(x))))
-  console.dir({ libList, schemaList }, { depth: null })
+  const libList = uniq(
+    Object.values(resultsPerRunner).flatMap((m) => Object.keys(m.lib)),
+  );
+  const schemaList = uniq(
+    Object.values(resultsPerRunner).flatMap((m) =>
+      Object.values(m.lib).flatMap((x) => Object.keys(x)),
+    ),
+  );
+  console.dir({ libList, schemaList }, { depth: null });
 
   await $`gzip --keep --best dist/schema/*.js`;
 
@@ -258,5 +266,9 @@ export const runBenchmarks = async (
     })),
   );
 
-  return { runtime: resultsPerRunner, size, meta: await getMetaData({ startTime, endTime: Date.now() }) };
+  return {
+    runtime: resultsPerRunner,
+    size,
+    meta: await getMetaData({ startTime, endTime: Date.now() }),
+  };
 };
