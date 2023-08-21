@@ -2,7 +2,7 @@ import { $ } from "zx";
 import { match } from "ts-pattern";
 import { buildForConfig } from "../src/build";
 import type { BenchmarkConfig } from "../src/types";
-import { runBenchmarks, runFixedBenchmarks } from "../src/runner";
+import { runBenchmarks, } from "../src/runner";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { detectOsType, getMetaData } from "../src/util";
