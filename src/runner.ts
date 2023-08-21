@@ -169,7 +169,7 @@ const runBenchmark = (
   const fixedBenchmarks: number[] = [];
   const resultMap = createMapWithDefaultEmptyArray<number>();
 
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 200; i++) {
     for (const combination of arrayShuffle(combinations)) {
       resultMap
         .getOrDefault(JSON.stringify(combination))
