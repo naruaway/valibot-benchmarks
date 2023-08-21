@@ -67,7 +67,7 @@ const libs = config.libs.map((lib) =>
 const benchmarkConfig: BenchmarkConfig = {
   libs,
 
-  durationMs: 100,
+  durationMs: 10,
   iterationsCount: 100,
 
   runners: ["nodejs", "bun"],
