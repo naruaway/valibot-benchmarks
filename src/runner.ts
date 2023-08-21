@@ -148,7 +148,7 @@ const runBenchmark = (
   const resultMap = createMapWithDefaultEmptyArray<number>();
 
   for (let i = 0; i < 1000; i++) {
-    console.log('iteration: ${i}')
+    console.log(`iteration: ${i}`)
     for (const combination of arrayShuffle(combinations)) {
       resultMap
         .getOrDefault(JSON.stringify(combination))
