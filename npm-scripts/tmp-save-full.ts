@@ -80,5 +80,5 @@ const benchmarkResult = await runBenchmarks(benchmarkConfig);
 
 fs.writeFileSync(
   path.join(dir, "result.json"),
-  JSON.stringify(benchmarkResult),
+  JSON.stringify({ benchmarkResult, valibotCommit }),
 );
