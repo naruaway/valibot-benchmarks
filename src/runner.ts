@@ -81,28 +81,6 @@ const formatStat = (stat: BenchmarkStat) => {
   )} stddev`;
 };
 
-const runBenchmarkWithRunner = (
-  config: BenchmarkConfig,
-  testDataName: string,
-  schemaList: Schema[],
-  data: Data,
-  runner: Runner,
-) => {
-  const opsPerSecondListMap: Record<string, number[]> = Object.fromEntries(
-    schemaList.map((s) => [s.name, []]),
-  );
-
-  for (let i = 0; i < config.iterationsCount; ++i) {
-    for (const schema of schemaList) {
-      const fp = getBenchmarkJsFilePath(testDataName, { data, schema });
-      const result = runner.run(fp);
-      assertNonNull(opsPerSecondListMap[schema.name]).push(result.opsPerSecond);
-    }
-  }
-  return Object.fromEntries(
-    schemaList.map((s) => [s.name, getStats(opsPerSecondListMap[s.name]!)]),
-  );
-};
 
 const relativeMetrics = ({
   baseline,
@@ -189,41 +167,18 @@ const runBenchmark = (
       [combination.lib]: {
         [combination.schema]: {
           [combination.data]: {
-            opsPerSecond: resultMap.getOrThrow(JSON.stringify(combination)),
+            opsPerSecond: assertNonNull(d3.median(resultMap.getOrThrow(JSON.stringify(combination)))),
           },
         },
       },
     });
   }
 
-  return { fixed, lib };
+  return { fixed: { opsPerSecond: assertNonNull(d3.median(fixed.opsPerSecond)) }, lib };
 };
 
 import * as d3 from "d3-array";
 import { getMetaData } from "./util";
-export const runFixedBenchmarks = (
-  runnerList: RunnerType[],
-  iterationsCount: number,
-): Record<RunnerType, number> => {
-  const metrics: Record<string, number[]> = Object.fromEntries(
-    runnerList.map((runnerType) => [runnerType, []]),
-  );
-
-  for (let i = 0; i < iterationsCount; ++i) {
-    for (const runnerType of runnerList) {
-      const result = runners[runnerType].run(
-        "./resources/fixed-benchmark-script.js",
-      );
-      metrics[runnerType]!.push(result.opsPerSecond);
-    }
-  }
-  return Object.fromEntries(
-    runnerList.map((runnerType) => [
-      runnerType,
-      d3.median(metrics[runnerType]!)!,
-    ]),
-  ) as Record<RunnerType, number>;
-};
 
 const uniq = (xs: Iterable<string>): string[] => Array.from(new Set(xs)).sort();
 
