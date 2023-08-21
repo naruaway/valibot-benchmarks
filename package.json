@@ -6,6 +6,7 @@
     "build": "./node_modules/.bin/tsx ./npm-scripts/build.ts",
     "ci:pickup-orders": "npm run clean && ./node_modules/.bin/tsx ./npm-scripts/ci-pickup-orders.ts",
     "ci:finalize-pending-tasks": "npm run clean && ./node_modules/.bin/tsx ./npm-scripts/finalize-pending-tasks.ts",
+    "ci:tmp-save-full": "npm run clean && ./node_modules/.bin/tsx ./npm-scripts/tmp-save-full.ts",
     "bench": "npm run build && ./node_modules/.bin/tsx ./npm-scripts/bench.ts",
     "bench:nodejs": "mkdir -p results && NODE_ENV=production node ./src/runners/nodejs.js results/nodejs.json",
     "bench:deno": "mkdir -p results && deno run --no-npm --allow-write=./results/deno.json ./src/runners/nodejs.js ./results/deno.json",
