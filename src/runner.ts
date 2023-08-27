@@ -149,13 +149,13 @@ const runBenchmark = (
 
   for (let i = 0; i < 1000; i++) {
     console.log(`iteration: ${i}`)
+    fixedBenchmarks.push(
+      runner.run("./resources/fixed-benchmark-script.js").opsPerSecond,
+    );
     for (const combination of arrayShuffle(combinations)) {
       resultMap
         .getOrDefault(JSON.stringify(combination))
         .push(runner.run(getBenchmarkJsFilePath(combination)).opsPerSecond);
-      fixedBenchmarks.push(
-        runner.run("./resources/fixed-benchmark-script.js").opsPerSecond,
-      );
     }
   }
 
