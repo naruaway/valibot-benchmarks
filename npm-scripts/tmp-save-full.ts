@@ -6,6 +6,7 @@ import { match } from 'ts-pattern'
 import type { BenchmarkConfig } from '../src/types'
 import { buildForConfig } from '../src/build'
 import { runBenchmarks } from '../src/runner'
+import { getSystemInfo } from '../src/system-info'
 
 const dir = './results-tmp'
 
@@ -17,6 +18,7 @@ fs.mkdirSync(dir, { recursive: true })
 const valibotCommit = '336bfd24d636e1ce31a28b8cccf79d9d'
 
 console.log('valibotcommit', valibotCommit)
+console.log(await getSystemInfo())
 
 type Lib =
   | {
