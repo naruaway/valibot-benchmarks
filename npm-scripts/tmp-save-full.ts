@@ -14,11 +14,9 @@ fs.mkdirSync(dir, { recursive: true })
 //./scripts/prepare-valibot.sh fabian-hiller/valibot d93d461238570a8ddca5f4833bfb202378eecc29
 //./scripts/prepare-valibot.sh fabian-hiller/valibot f7dd99388d80c0913bd4bc59698e5c28314c5230
 //./scripts/prepare-valibot.sh fabian-hiller/valibot db2714403351b469eed8c8622613af5067db9514
-const valibotCommit = v.parse(v.string([v.minLength(10)]), process.env['VALIBOT_COMMIT'])
+const valibotCommit = '336bfd24d636e1ce31a28b8cccf79d9d'
 
 console.log('valibotcommit', valibotCommit)
-
-
 
 type Lib =
   | {
