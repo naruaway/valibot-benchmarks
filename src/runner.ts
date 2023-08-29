@@ -182,7 +182,8 @@ const runBenchmark = (
       [combination.lib]: {
         [combination.schema]: {
           [combination.data]: {
-            opsPerSecond: assertNonNull(/*d3.median*/(resultMap.getOrThrow(JSON.stringify(combination)))),
+            // opsPerSecond: assertNonNull(/*d3.median*/(resultMap.getOrThrow(JSON.stringify(combination)))),
+            opsPerSecond: assertNonNull(/*d3.median*/(resultMap.getOrDefault(JSON.stringify(combination)))),
           },
         },
       },
