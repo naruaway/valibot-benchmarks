@@ -1,9 +1,5 @@
 on:
   workflow_dispatch:
-    inputs:
-      commit:
-          description: 'target valibot commit'
-          required: true
 
 jobs:
   build:
@@ -24,8 +20,6 @@ jobs:
         with:
           version: 8
       - name: Run
-        env:
-          VALIBOT_COMMIT: ${{ inputs.commit }}
         run: npm ci && npm run ci:tmp-save-full
       - uses: actions/upload-artifact@v3
         with:
