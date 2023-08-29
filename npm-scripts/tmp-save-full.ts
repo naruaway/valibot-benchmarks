@@ -19,6 +19,7 @@ const valibotCommit = '336bfd24d636e1ce31a28b8cccf79d9d'
 
 console.log('valibotcommit', valibotCommit)
 console.log(await getSystemInfo())
+throw new Error('err')
 
 type Lib =
   | {
