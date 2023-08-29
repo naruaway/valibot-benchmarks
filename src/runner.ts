@@ -150,23 +150,11 @@ const runBenchmark = (
   const resultMap = createMapWithDefaultEmptyArray<number>();
 
   for (let i = 0; i < 100; i++) {
-    console.log(`warmup iteration: ${i}`)
-    runner.run("./resources/fixed-benchmark-script.js")
-    for (const combination of arrayShuffle(combinations)) {
-      if (JSON.stringify(combination) !== targetCombination) continue
-
-
-      runner.run(getBenchmarkJsFilePath(combination))
-    }
-  }
-
-  for (let i = 0; i < 100; i++) {
     console.log(`iteration: ${i}`)
     fixedBenchmarks.push(
       runner.run("./resources/fixed-benchmark-script.js").opsPerSecond,
     );
     for (const combination of arrayShuffle(combinations)) {
-      if (JSON.stringify(combination) !== targetCombination) continue
       resultMap
         .getOrDefault(JSON.stringify(combination))
         .push(runner.run(getBenchmarkJsFilePath(combination)).opsPerSecond);
@@ -182,8 +170,7 @@ const runBenchmark = (
       [combination.lib]: {
         [combination.schema]: {
           [combination.data]: {
-            // opsPerSecond: assertNonNull(/*d3.median*/(resultMap.getOrThrow(JSON.stringify(combination)))),
-            opsPerSecond: assertNonNull(/*d3.median*/(resultMap.getOrDefault(JSON.stringify(combination)))),
+            opsPerSecond: assertNonNull(/*d3.median*/(resultMap.getOrThrow(JSON.stringify(combination)))),
           },
         },
       },
