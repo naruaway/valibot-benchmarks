@@ -18,8 +18,7 @@ fs.mkdirSync(dir, { recursive: true })
 const valibotCommit = '336bfd24d636e1ce31a28b8cccf79d9d'
 
 console.log('valibotcommit', valibotCommit)
-console.log(await getSystemInfo())
-throw new Error('err')
+const systemInfo = await getSystemInfo()
 
 type Lib =
   | {
@@ -81,5 +80,5 @@ const benchmarkResult = await runBenchmarks(benchmarkConfig);
 
 fs.writeFileSync(
   path.join(dir, "result.json"),
-  JSON.stringify({ benchmarkResult, valibotCommit }),
+  JSON.stringify({ benchmarkResult, valibotCommit, systemInfo }),
 );
