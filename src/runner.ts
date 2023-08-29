@@ -128,6 +128,8 @@ interface BenchmarkRet {
   lib: Record<string, Record<string, Record<string, { opsPerSecond: number }>>>;
 }
 
+
+const targetCombination = '{"lib":"valibot@336bfd24d636e1ce31a28b8cccf79d9d","schema":"wide","data":"valid"}'
 const runBenchmark = (
   config: BenchmarkConfig,
   runner: Runner,
@@ -147,12 +149,24 @@ const runBenchmark = (
   const fixedBenchmarks: number[] = [];
   const resultMap = createMapWithDefaultEmptyArray<number>();
 
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < 100; i++) {
+    console.log(`warmup iteration: ${i}`)
+    runner.run("./resources/fixed-benchmark-script.js")
+    for (const combination of arrayShuffle(combinations)) {
+      if (JSON.stringify(combination) !== targetCombination) continue
+
+
+      runner.run(getBenchmarkJsFilePath(combination))
+    }
+  }
+
+  for (let i = 0; i < 100; i++) {
     console.log(`iteration: ${i}`)
     fixedBenchmarks.push(
       runner.run("./resources/fixed-benchmark-script.js").opsPerSecond,
     );
     for (const combination of arrayShuffle(combinations)) {
+      if (JSON.stringify(combination) !== targetCombination) continue
       resultMap
         .getOrDefault(JSON.stringify(combination))
         .push(runner.run(getBenchmarkJsFilePath(combination)).opsPerSecond);
